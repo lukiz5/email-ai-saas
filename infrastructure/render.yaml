@@ -1,0 +1,52 @@
+services:
+  # Backend API
+  - type: web
+    name: email-ai-backend
+    env: python
+    buildCommand: cd backend && pip install -r requirements.txt
+    startCommand: cd backend && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: email-ai-db
+          property: connectionString
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: CLERK_PEM_PUBLIC_KEY
+        sync: false
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PRICE_ID_PRO
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      - key: STRIPE_SUCCESS_URL
+        value: https://yourdomain.com/success
+      - key: STRIPE_CANCEL_URL
+        value: https://yourdomain.com/pricing
+      - key: STRIPE_RETURN_URL
+        value: https://yourdomain.com/settings
+      - key: GOOGLE_CLIENT_ID
+        sync: false
+      - key: GOOGLE_CLIENT_SECRET
+        sync: false
+      - key: GOOGLE_REDIRECT_URI
+        value: https://your-backend.onrender.com/api/gmail/callback
+      - key: MICROSOFT_CLIENT_ID
+        sync: false
+      - key: MICROSOFT_CLIENT_SECRET
+        sync: false
+      - key: MICROSOFT_REDIRECT_URI
+        value: https://your-backend.onrender.com/api/outlook/callback
+      - key: ENCRYPTION_KEY
+        generateValue: true
+      - key: FRONTEND_URL
+        value: https://yourdomain.com
+      - key: PYTHON_VERSION
+        value: 3.11.0
+
+databases:
+  - name: email-ai-db
+    databaseName: email_ai_saas
+    user: email_ai_user
+    plan: starter
