@@ -1,0 +1,57 @@
+{
+  "name": "Email AI SaaS - Smart Email Summarization",
+  "short_name": "EmailAI",
+  "description": "AI-powered email summarization with Gmail, Outlook, and IMAP integration",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#ffffff",
+  "theme_color": "#0ea5e9",
+  "display": "standalone",
+  "orientation": "portrait",
+  "scope": "/",
+  "categories": ["productivity", "business", "utilities"],
+  "screenshots": [
+    {
+      "src": "/screenshot-mobile.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "/screenshot-desktop.png",
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Summarize Email",
+      "short_name": "Summarize",
+      "description": "Quickly summarize an email",
+      "url": "/?action=summarize",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Gmail",
+      "short_name": "Gmail",
+      "description": "Access Gmail integration",
+      "url": "/gmail",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    }
+  ],
+  "prefer_related_applications": false
+}

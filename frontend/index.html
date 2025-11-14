@@ -2,13 +2,56 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- PWA Primary Meta Tags -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes, viewport-fit=cover" />
     <title>Email AI SaaS - AI-Powered Email Summarization</title>
-    <meta name="description" content="Summarize your emails with AI. Get smart insights, action items, and priority scoring." />
+    <meta name="description" content="Summarize your emails with AI. Get smart insights, action items, and priority scoring. Works with Gmail, Outlook, and IMAP." />
+
+    <!-- PWA App Manifest -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- Icons -->
+    <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#0ea5e9" />
+    <meta name="msapplication-TileColor" content="#0ea5e9" />
+
+    <!-- Mobile Web App Capable -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="EmailAI" />
+
+    <!-- Disable tap highlight on IE -->
+    <meta name="msapplication-tap-highlight" content="no" />
+
+    <!-- Prevent text size adjustment on orientation change -->
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- Social Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Email AI SaaS" />
+    <meta property="og:description" content="AI-powered email summarization with Gmail, Outlook, and IMAP integration" />
+    <meta property="og:image" content="/icon-512.png" />
+
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Email AI SaaS" />
+    <meta name="twitter:description" content="AI-powered email summarization" />
+    <meta name="twitter:image" content="/icon-512.png" />
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <noscript>
+      <div style="text-align: center; padding: 50px; font-family: sans-serif;">
+        <h1>JavaScript Required</h1>
+        <p>This application requires JavaScript to run. Please enable JavaScript in your browser.</p>
+      </div>
+    </noscript>
   </body>
 </html>

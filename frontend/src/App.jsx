@@ -1,16 +1,29 @@
-import React from 'react';
+import React, { Suspense, lazy, useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { ClerkProvider, SignedIn, SignedOut, SignIn, SignUp, RedirectToSignIn } from '@clerk/clerk-react';
 import Sidebar from './components/Sidebar';
-import ManualInput from './pages/ManualInput';
-import Gmail from './pages/Gmail';
-import Outlook from './pages/Outlook';
-import IMAP from './pages/IMAP';
-import History from './pages/History';
-import Settings from './pages/Settings';
+import MobileNav from './components/MobileNav';
+import MobileHeader from './components/MobileHeader';
+import InstallPrompt from './components/InstallPrompt';
+import Loader from './components/Loader';
 import { useAuthSync } from './lib/auth';
 
+// Lazy load pages for better performance
+const ManualInput = lazy(() => import('./pages/ManualInput'));
+const Gmail = lazy(() => import('./pages/Gmail'));
+const Outlook = lazy(() => import('./pages/Outlook'));
+const IMAP = lazy(() => import('./pages/IMAP'));
+const History = lazy(() => import('./pages/History'));
+const Settings = lazy(() => import('./pages/Settings'));
+
 const CLERK_PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY || 'pk_test_XXXXXX';
+
+// Loading fallback component
+const PageLoader = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <Loader size="lg" text="Loading..." />
+  </div>
+);
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -33,62 +46,78 @@ const PublicRoute = ({ children }) => {
 const AppContent = () => {
   useAuthSync(); // Sync auth token
 
+  const [drawerOpen, setDrawerOpen] = useState(false);
+
   return (
-    <div className="flex h-screen bg-gray-50">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="p-8">
-          <Routes>
-            {/* Public route - FREE tier */}
-            <Route path="/" element={<PublicRoute><ManualInput /></PublicRoute>} />
+    <div className="flex h-screen bg-gray-50 overflow-hidden">
+      {/* Desktop sidebar / Mobile drawer */}
+      <Sidebar isOpen={drawerOpen} onClose={() => setDrawerOpen(false)} />
 
-            {/* Protected routes - require login */}
-            <Route
-              path="/gmail"
-              element={
-                <ProtectedRoute>
-                  <Gmail />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/outlook"
-              element={
-                <ProtectedRoute>
-                  <Outlook />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/imap"
-              element={
-                <ProtectedRoute>
-                  <IMAP />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/history"
-              element={
-                <ProtectedRoute>
-                  <History />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/settings"
-              element={
-                <ProtectedRoute>
-                  <Settings />
-                </ProtectedRoute>
-              }
-            />
+      {/* Mobile header */}
+      <MobileHeader onMenuClick={() => setDrawerOpen(true)} />
 
-            {/* Catch all */}
-            <Route path="*" element={<ManualInput />} />
-          </Routes>
+      {/* Main content */}
+      <main className="flex-1 overflow-y-auto md:overflow-auto">
+        <div className="p-4 md:p-8 pt-16 md:pt-8 mobile-content-wrapper">
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
+              {/* Public route - FREE tier */}
+              <Route path="/" element={<PublicRoute><ManualInput /></PublicRoute>} />
+
+              {/* Protected routes - require login */}
+              <Route
+                path="/gmail"
+                element={
+                  <ProtectedRoute>
+                    <Gmail />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/outlook"
+                element={
+                  <ProtectedRoute>
+                    <Outlook />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/imap"
+                element={
+                  <ProtectedRoute>
+                    <IMAP />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/history"
+                element={
+                  <ProtectedRoute>
+                    <History />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/settings"
+                element={
+                  <ProtectedRoute>
+                    <Settings />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Catch all */}
+              <Route path="*" element={<ManualInput />} />
+            </Routes>
+          </Suspense>
         </div>
       </main>
+
+      {/* Mobile bottom navigation */}
+      <MobileNav />
+
+      {/* PWA Install prompt */}
+      <InstallPrompt />
     </div>
   );
 };

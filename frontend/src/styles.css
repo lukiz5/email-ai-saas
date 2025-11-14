@@ -5,50 +5,214 @@
 @layer base {
   body {
     @apply bg-gray-50 text-gray-900;
+    /* Prevent pull-to-refresh on mobile */
+    overscroll-behavior-y: contain;
+    /* Prevent text size adjustment on mobile */
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Mobile-first: touch-friendly tap targets */
+  html {
+    /* Smooth scrolling */
+    scroll-behavior: smooth;
+    /* Fix for iOS Safari */
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
 @layer components {
+  /* Mobile-first buttons with min-height 48px for touch */
   .btn-primary {
-    @apply bg-primary-600 hover:bg-primary-700 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-primary-600 active:bg-primary-700 text-white font-medium py-3 px-6 rounded-lg transition-colors duration-200;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  /* Desktop hover state */
+  @media (hover: hover) {
+    .btn-primary:hover {
+      @apply bg-primary-700;
+    }
   }
 
   .btn-secondary {
-    @apply bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply bg-gray-200 active:bg-gray-300 text-gray-800 font-medium py-3 px-6 rounded-lg transition-colors duration-200;
+    min-height: 48px;
+    touch-action: manipulation;
+  }
+
+  @media (hover: hover) {
+    .btn-secondary:hover {
+      @apply bg-gray-300;
+    }
   }
 
   .btn-outline {
-    @apply border-2 border-primary-600 text-primary-600 hover:bg-primary-50 font-medium py-2 px-4 rounded-lg transition-colors duration-200;
+    @apply border-2 border-primary-600 text-primary-600 active:bg-primary-50 font-medium py-3 px-6 rounded-lg transition-colors duration-200;
+    min-height: 48px;
+    touch-action: manipulation;
   }
 
+  @media (hover: hover) {
+    .btn-outline:hover {
+      @apply bg-primary-50;
+    }
+  }
+
+  /* Mobile-optimized card with responsive padding */
   .card {
-    @apply bg-white rounded-lg shadow-md p-6;
+    @apply bg-white rounded-lg shadow-md p-4;
   }
 
+  @media (min-width: 768px) {
+    .card {
+      @apply p-6;
+    }
+  }
+
+  /* Mobile-optimized input with larger tap target */
   .input-field {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200;
+    @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all duration-200;
+    min-height: 48px;
+    font-size: 16px; /* Prevent zoom on iOS */
   }
 
+  /* Auto-resizing textarea for mobile */
   .textarea-field {
     @apply w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none resize-none transition-all duration-200;
+    min-height: 120px;
+    font-size: 16px; /* Prevent zoom on iOS */
+  }
+
+  /* Mobile sticky action button */
+  .mobile-sticky-action {
+    @apply fixed bottom-20 left-0 right-0 p-4 bg-white border-t border-gray-200 z-40;
+  }
+
+  @media (min-width: 768px) {
+    .mobile-sticky-action {
+      @apply relative bottom-auto left-auto right-auto p-0 border-0 bg-transparent;
+    }
   }
 }
 
-/* Custom scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+/* Custom scrollbar - hide on mobile */
+@media (min-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 }
 
-::-webkit-scrollbar-track {
-  background: #f1f1f1;
+/* Mobile: hide scrollbar */
+@media (max-width: 767px) {
+  ::-webkit-scrollbar {
+    display: none;
+  }
 }
 
-::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 4px;
+/* Mobile navigation spacing */
+.mobile-content-wrapper {
+  padding-bottom: 80px; /* Space for bottom nav */
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #555;
+@media (min-width: 768px) {
+  .mobile-content-wrapper {
+    padding-bottom: 0;
+  }
+}
+
+/* Drawer overlay */
+.drawer-overlay {
+  @apply fixed inset-0 bg-black bg-opacity-50 z-40;
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Drawer */
+.drawer {
+  @apply fixed top-0 left-0 bottom-0 w-64 bg-white z-50 transform -translate-x-full;
+  transition: transform 0.3s ease-in-out;
+}
+
+.drawer.open {
+  @apply translate-x-0;
+}
+
+/* Pull to refresh indicator */
+.pull-to-refresh {
+  @apply absolute top-0 left-0 right-0 flex items-center justify-center py-4;
+  transform: translateY(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+
+.pull-to-refresh.visible {
+  transform: translateY(0);
+}
+
+/* Touch-friendly swipe indicators */
+.swipeable {
+  touch-action: pan-y;
+  user-select: none;
+}
+
+/* Loading skeleton for mobile */
+.skeleton {
+  @apply bg-gray-200 animate-pulse rounded;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: max(0px)) {
+  .safe-area-top {
+    padding-top: max(env(safe-area-inset-top), 1rem);
+  }
+
+  .safe-area-bottom {
+    padding-bottom: max(env(safe-area-inset-bottom), 1rem);
+  }
+}
+
+/* iOS-specific fixes */
+@supports (-webkit-touch-callout: none) {
+  /* iOS Safari specific styles */
+  .input-field,
+  .textarea-field {
+    -webkit-appearance: none;
+    border-radius: 8px;
+  }
+}
+
+/* PWA install banner */
+.pwa-install-banner {
+  @apply fixed bottom-0 left-0 right-0 bg-white border-t-2 border-primary-500 p-4 shadow-lg z-50;
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Haptic feedback simulation */
+@media (hover: none) {
+  .tap-feedback:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease;
+  }
 }

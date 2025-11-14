@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Mail, Inbox, MessageSquare, History, Settings, Sparkles } from 'lucide-react';
+import { Mail, Inbox, MessageSquare, History, Settings, Sparkles, X } from 'lucide-react';
 import { useIsPro } from '../lib/auth';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen = true, onClose = () => {} }) => {
   const location = useLocation();
   const isPro = useIsPro();
 
@@ -16,16 +16,61 @@ const Sidebar = () => {
     { name: 'Settings', path: '/settings', icon: Settings, free: true },
   ];
 
+  // Close drawer on route change (mobile)
+  useEffect(() => {
+    onClose();
+  }, [location.pathname]);
+
+  // Close drawer on escape key
+  useEffect(() => {
+    const handleEscape = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleEscape);
+    return () => document.removeEventListener('keydown', handleEscape);
+  }, [isOpen, onClose]);
+
   return (
-    <div className="w-64 bg-white border-r border-gray-200 h-screen flex flex-col">
+    <>
+      {/* Overlay for mobile drawer */}
+      {isOpen && (
+        <div
+          className="md:hidden drawer-overlay"
+          onClick={onClose}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar/Drawer */}
+      <div
+        className={`
+          w-64 bg-white border-r border-gray-200 h-screen flex flex-col
+          md:relative md:translate-x-0
+          ${isOpen ? 'drawer open' : 'drawer'}
+        `}
+      >
       {/* Logo */}
       <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-2">
-          <Sparkles className="text-primary-600" size={32} />
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">Email AI</h1>
-            <p className="text-xs text-gray-500">Smart Summaries</p>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <Sparkles className="text-primary-600" size={32} />
+            <div>
+              <h1 className="text-xl font-bold text-gray-900">Email AI</h1>
+              <p className="text-xs text-gray-500">Smart Summaries</p>
+            </div>
           </div>
+
+          {/* Close button for mobile */}
+          <button
+            onClick={onClose}
+            className="md:hidden p-2 -mr-2 rounded-lg active:bg-gray-100 transition-colors tap-feedback"
+            aria-label="Close menu"
+          >
+            <X size={24} className="text-gray-700" />
+          </button>
         </div>
       </div>
 
